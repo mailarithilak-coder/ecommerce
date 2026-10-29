@@ -110,6 +110,10 @@ function App() {
     });
   }
 
+  function clearCart() {
+    setCart([]);
+  }
+
   function changeQuantity(productId, delta) {
     setCart((currentCart) =>
       currentCart
@@ -224,7 +228,7 @@ function App() {
         />
         <Route
           path="/checkout"
-          element={<CheckoutPage cart={cart} subtotal={subtotal} user={user} token={token} />}
+          element={<CheckoutPage cart={cart} subtotal={subtotal} user={user} token={token} clearCart={clearCart} />}
         />
         <Route path="/admin" element={<AdminPage user={user} token={token} />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -761,7 +765,7 @@ function CartPage({ cart, subtotal, changeQuantity, removeFromCart, user }) {
   );
 }
 
-function CheckoutPage({ cart, subtotal, user, token }) {
+function CheckoutPage({ cart, subtotal, user, token, clearCart }) {
   const navigate = useNavigate();
   const [form, setForm] = useState({ fullName: user?.name || '', phone: '', address: '', city: '', state: '', postalCode: '', paymentMethod: 'Card' });
   const [message, setMessage] = useState('');
@@ -790,6 +794,7 @@ function CheckoutPage({ cart, subtotal, user, token }) {
 
       setMessage(`Order placed successfully! Order #${result.order.orderNumber}`);
       localStorage.removeItem('shoplane-cart');
+      clearCart();
       setTimeout(() => navigate('/account'), 1500);
     } catch (error) {
       setMessage(error.message);
